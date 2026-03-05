@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dyson Shop | Эстетика технологий</title>
+    <style>
+        /* СОХРАНЯЕМ ВСЕ ТВОИ ПЕРЕМЕННЫЕ */
+        :root {
+            --accent-pink: #ff8fa3;
+            --soft-gold: #d4af37;
+            --dyson-black: #121212;
+            --glass: rgba(255, 255, 255, 0.8);
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            margin: 0;
+            background: #fff;
+            color: var(--dyson-black);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* ЭФФЕКТ ЖИВОГО ПОЯВЛЕНИЯ (Scroll Reveal) */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ШАПКА (Твои стили + мягкий параллакс) */
+        header {
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1522338242992-e1a54906a8da?auto=format&fit=crop&q=80&w=1000');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Эффект глубины */
+            color: white;
+            clip-path: ellipse(150% 100% at 50% 0%);
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 200;
+            letter-spacing: 12px;
+            margin: 0;
+            text-transform: uppercase;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            letter-spacing: 3px;
+            margin-top: 20px;
+            opacity: 0.8;
+            font-weight: 300;
+        }
+
+        /* КОНТЕЙНЕР (Твои стили + эффект парения) */
+        .container {
+            max-width: 1100px;
+            margin: -80px auto 50px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .card {
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            padding: 40px 30px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-15px);
+            background: white;
+            box-shadow: 0 30px 60px rgba(255, 143, 163, 0.2);
+        }
+
+        /* КАТАЛОГ (Твои стили + ховер-эффект на картинки) */
+        .catalog-section {
+            max-width: 1100px;
+            margin: 50px auto 100px;
+            padding: 0 20px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            background: white;
+            border-radius: 40px;
+            overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.07);
+            border: 1px solid #eee;
+            margin-top: 50px;
+            transition: var(--transition);
+        }
+
+        .product-grid:hover {
+            box-shadow: 0 45px 90px rgba(0,0,0,0.12);
+        }
+
+        @media (min-width: 800px) {
+            .product-grid { grid-template-columns: 1.2fr 1fr; }
+        }
+
+        .product-images {
+            padding: 40px;
+            background: #fdfdfd;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .main-img {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 20px;
+            transition: transform 0.7s ease;
+        }
+
+        .product-grid:hover .main-img {
+            transform: scale(1.03);
+        }
+
+        .thumbs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .thumbs img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .thumbs img:hover { border-color: var(--accent-pink); transform: translateY(-3px); }
+
+        .product-info {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .tag {
+            color: var(--accent-pink);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .price {
+            font-size: 2.2rem;
+            font-weight: 300;
+            margin: 20px 0;
+            color: var(--dyson-black);
+        }
+
+        .specs {
+            margin: 25px 0;
+            padding: 0;
+            list-style: none;
+            color: #666;
+            line-height: 2;
+        }
+
+        .specs li::before {
+            content: "— ";
+            color: var(--accent-pink);
+        }
+
+        /* КНОПКИ (Твои стили + интерактив) */
+        .btn {
+            display: inline-block;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: 0.3s;
+            background: var(--dyson-black);
+            color: white;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-pink { background: var(--accent-pink); }
+        .btn:hover { 
+            transform: scale(1.05) translateY(-2px); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15); 
+        }
+
+        /* ФОНОВЫЕ ЭФФЕКТЫ */
+        .floating-circles .circle {
+            position: fixed;
+            border-radius: 50%;
+            background: rgba(255, 143, 163, 0.12);
+            filter: blur(80px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="floating-circles">
+        <div class="circle" id="circle1" style="width: 600px; height: 600px; top: -10%; left: -10%;"></div>
+        <div class="circle" id="circle2" style="width: 500px; height: 500px; bottom: -5%; right: -5%;"></div>
+    </div>
+
+    <header>
+        <h1>Dyson Shop</h1>
+        <div class="subtitle">Искусство заботы в каждой детали</div>
+    </header>
+
+    <div class="container">
+        <div class="card reveal" style="border: 2px solid var(--accent-pink);">
+            <h2 style="color: #d63384;">🌸 8 Марта</h2>
+            <p>Подарки, которые говорят о любви громче слов.</p>
+            <a href="#march-special" class="btn btn-pink">Смотреть магию</a>
+        </div>
+        <div class="card reveal" style="transition-delay: 0.1s;">
+            <h2>🎁 Комбо</h2>
+            <p>Наборы для совершенного образа по специальной цене.</p>
+            <a href="#combo-set" class="btn">Выбрать набор</a>
+        </div>
+        <div class="card reveal" style="transition-delay: 0.2s;">
+            <h2>✨ Отдельный выбор</h2>
+            <p>Стайлеры, кроссовки и десерты для вашего вдохновения.</p>
+            <a href="#catalog" class="btn">В каталог</a>
+        </div>
+    </div>
+
+    <section class="catalog-section" id="catalog">
+
+        <div class="product-grid reveal" id="march-special" style="border: 2px solid var(--accent-pink);">
+            <div class="product-images">
+                <img src="https://www.imgur.la/images/2026/03/05/Screenshot_2026-03-04-23-21-01-276_com.whatsapp-edit.jpg" alt="Dyson 8 March Special" class="main-img">
+            </div>
+            <div class="product-info">
+                <div class="tag">8 March Edition • Pure Elegance</div>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Premium Dyson Holiday Set</h2>
+                <p style="color: #888;">Воплощение нежности и технологического совершенства. Лимитированный набор в изысканном оформлении, созданный специально для того, чтобы подчеркнуть её уникальность.</p>
+                <ul class="specs">
+                    <li>Эксклюзивная цветовая палитра</li>
+                    <li>Полный набор интеллектуальных насадок</li>
+                    <li>Подарочная упаковка Luxury Edition</li>
+                    <li>Гарантия безупречного стиля</li>
+                </ul>
+                <div class="price">239.990 тг</div>
+                <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20заказать%20Подарочный%20набор%20к%208%20марта%20за%20239.990%20тг" class="btn btn-pink">Заказать к 8 Марта</a>
+            </div>
+        </div>
+        
+        <div class="product-grid reveal" id="combo-set">
+            <div class="product-images">
+                <img src="https://www.imgur.la/images/2026/03/05/1002013775.jpg" alt="Dyson Set Bundle" class="main-img">
+            </div>
+            <div class="product-info">
+                <div class="tag">Special Combo • Limited Edition</div>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Dyson Beauty Combo Set</h2>
+                <p style="color: #888;">Эксклюзивное предложение: фен Dyson Supersonic в комплекте с фирменным кейсом и набором аксессуаров для профессиональной укладки.</p>
+                <ul class="specs">
+                    <li>Фен Supersonic с мощным двигателем V9</li>
+                    <li>Полный комплект магнитных насадок</li>
+                    <li>Премиальный чехол для хранения</li>
+                    <li>Специальная цена за весь комплект</li>
+                </ul>
+                <div class="price">116.290 тг</div>
+                <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20заказать%20Комбо%20набор%20за%20116.290%20тг" class="btn btn-pink">Заказать Комбо</a>
+            </div>
+        </div>
+
+        <div class="product-grid reveal">
+            <div class="product-images">
+                <img src="https://avatars.mds.yandex.net/get-mpic/15417456/2a00000194e65c82f5ce1e6196b9a964aca7/jpg" alt="Dyson" class="main-img" id="mainImage">
+                <div class="thumbs">
+                    <img src="https://avatars.mds.yandex.net/get-mpic/15417456/2a00000194e65c82f5ce1e6196b9a964aca7/orig" onclick="document.getElementById('mainImage').src=this.src">
+                    <img src="https://ir.ozone.ru/s3/multimedia-u/6532665966.jpg" onclick="document.getElementById('mainImage').src=this.src">
+                    <img src="https://ir.ozone.ru/s3/multimedia-1-z/7706366891.jpg" onclick="document.getElementById('mainImage').src=this.src">
+                    <img src="https://avatars.mds.yandex.net/get-mpic/15540374/2a0000019aba54bf8867fffd181eb0171486/orig" onclick="document.getElementById('mainImage').src=this.src">
+                </div>
+            </div>
+            <div class="product-info">
+                <div class="tag">Limited Edition • Ceramic Pink</div>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Dyson Airwrap™ Complete Long</h2>
+                <p style="color: #888;">Мультистайлер для разных типов волос в эксклюзивном нежно-розовом исполнении. Создание локонов, волн и гладких укладок без экстремального перегрева.</p>
+                <ul class="specs">
+                    <li>Цифровое управление нагревом</li>
+                    <li>Эффект Коанда для разглаживания</li>
+                    <li>6 насадок в комплекте + чехол</li>
+                    <li>Мощный двигатель V9</li>
+                </ul>
+                <div class="price">132.000 тг</div>
+                <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20купить%20Dyson%20Airwrap%20Ceramic%20Pink" class="btn btn-pink">Купить</a>
+            </div>
+        </div>
+
+        <div class="product-grid reveal">
+            <div class="product-images">
+                <img src="https://avatars.mds.yandex.net/get-mpic/4262452/2a0000019290a894bef7d7ab7a8513760dcd/orig" alt="Dyson Supersonic" class="main-img">
+            </div>
+            <div class="product-info">
+                <div class="tag">Special Edition • Rose Gold</div>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Dyson Supersonic™ HD15</h2>
+                <p style="color: #888;">Профессиональный фен для быстрой сушки волос. Интеллектуальная система контроля температуры защищает естественный блеск волос.</p>
+                <ul class="specs">
+                    <li>Насадка для непослушных волос</li>
+                    <li>Магнитные насадки для укладки</li>
+                    <li>3 режима скорости и 4 режима нагрева</li>
+                    <li>Ионизация для снятия статики</li>
+                </ul>
+                <div class="price">59.900 тг</div>
+                <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20купить%20Dyson%20Supersonic%20HD15" class="btn btn-pink">Купить</a>
+            </div>
+        </div>
+
+        <div class="product-grid reveal">
+            <div class="product-images">
+                <img src="https://avatars.mds.yandex.net/get-mpic/18412261/2a0000019b1248f27f6ec8faf8e3de19ef8f/orig" alt="Dyson Airstrait" class="main-img">
+            </div>
+            <div class="product-info">
+                <div class="tag">New Arrival • Bright Nickel</div>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Dyson Airstrait™ Straightener</h2>
+                <p style="color: #888;">Новое поколение выпрямителей: сушка и выпрямление одновременно с помощью мощного потока воздуха. Без горячих пластин.</p>
+                <ul class="specs">
+                    <li>Укладка из мокрого состояния в сухое</li>
+                    <li>Сохранение прочности и блеска волос</li>
+                    <li>Цветной LCD-дисплей</li>
+                    <li>Режим автоматической паузы</li>
+                </ul>
+                <div class="price">59.900 тг</div>
+                <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20купить%20Dyson%20Airstrait" class="btn btn-pink">Купить</a>
+            </div>
+        </div>
+
+        <div class="product-grid reveal">
+            <div class="product-images">
+                <img src="https://www.dparadise.ru/wa-data/public/shop/products/43/72/187243/images/140035/140035.970.jpeg" alt="Dyson Corrale" class="main-img">
+            </div>
+            <div class="product-info">
+                <div class="tag">Professional • Fuchsia/Nickel</div>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Dyson Corrale™ Straightener</h2>
+                <p style="color: #888;">Единственный выпрямитель с гибкими пластинами, которые меняют форму, охватывая пряди волос. Идеальная укладка при меньшем нагреве.</p>
+                <ul class="specs">
+                    <li>Гибкие медные пластины</li>
+                    <li>До 30 минут работы без провода</li>
+                    <li>Интеллектуальный контроль нагрева</li>
+                    <li>OLED-дисплей с уровнем заряда</li>
+                </ul>
+                <div class="price">69.900 тг</div>
+                <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20купить%20Dyson%20Corrale" class="btn btn-pink">Купить</a>
+            </div>
+        </div>
+
+        <div class="product-grid reveal">
+            <div class="product-images">
+                <img src="https://ir.ozone.ru/s3/multimedia-1-c/7664018484.jpg" alt="Dyson Supersonic Nural" class="main-img">
+            </div>
+            <div class="product-info">
+                <div class="tag">Smart Tech • Vinca Blue</div>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Dyson Supersonic Nural™</h2>
+                <p style="color: #888;">Самый умный фен Dyson. Встроенные датчики автоматически снижают температуру при приближении к коже головы, защищая её здоровье.</p>
+                <ul class="specs">
+                    <li>Режим защиты кожи головы</li>
+                    <li>Распознавание насадок</li>
+                    <li>Подсветка капсулы с температурой</li>
+                    <li>Датчик автопаузы при движении</li>
+                </ul>
+                <div class="price">69.900 тг</div>
+                <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20купить%20Dyson%20Supersonic%20Nural" class="btn btn-pink">Купить</a>
+            </div>
+        </div>
+
+        <div class="product-grid reveal">
+            <div class="product-images">
+                <img src="https://ir-3.ozone.ru/s3/multimedia-1-g/w1200/7457238520.jpg" alt="Dyson V15" class="main-img">
+            </div>
+            <div class="product-info">
+                <div class="tag">Home Care • Yellow/Nickel</div>
+                <h2 style="font-size: 2.5rem; margin: 10px 0;">Dyson V15 Detect™</h2>
+                <p style="color: #888;">Мощный беспроводной пылесос с лазерным лучом, который делает невидимую пыль на твердом полу видимой. Чистота, которую можно доказать.</p>
+                <ul class="specs">
+                    <li>Лазерная подсветка пыли</li>
+                    <li>Пьезо-датчик контроля загрязнений</li>
+                    <li>ЖК-экран с отчетом о уборке</li>
+                    <li>До 60 минут работы</li>
+                </ul>
+                <div class="price">69.900 тг</div>
+                <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20купить%20Dyson%20V15%20Detect" class="btn btn-pink">Купить</a>
+            </div>
+        </div>
+
+    </section>
+
+    <footer style="text-align: center; padding: 50px 0; opacity: 0.5; font-weight: 300;">
+        Сделано с вдохновением для Dyson Shop • 2026
+    </footer>
+
+    <script>
+        // Функция для появления элементов при скролле
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                var elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        reveal(); // Инициализация
+
+        // Эффект интерактивного фона (следит за мышкой)
+        document.addEventListener("mousemove", (e) => {
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            document.getElementById('circle1').style.transform = `translate(${x * 50}px, ${y * 50}px)`;
+            document.getElementById('circle2').style.transform = `translate(${x * -30}px, ${y * -30}px)`;
+        });
+    </script>
+
+</body>
+</html>
+<script>
+// Add a pulsing effect to the 8th of March card
+const marchCard = document.querySelector('.card[style*="border: 2px solid var(--accent-pink)"]');
+setInterval(() => {
+marchCard.classList.toggle('pulse');
+}, 2000);
+</script>
+
+<style>
+.card.pulse {
+box-shadow: 0 0 20px rgba(255, 143, 163, 0.5);
+}
+</style>
+<div class="product-grid reveal" id="march-special" style="border: 3px solid var(--accent-pink); background: linear-gradient(180deg, #fffcfd 0%, #fff 100%);">
+    <div class="product-images">
+        <img src="https://www.imgur.la/images/2026/03/05/IMG-20260305-WA0002.jpg" alt="Dyson 8 March Edition" class="main-img">
+        <div style="margin-top: 15px; display: flex; gap: 10px;">
+            <span style="background: var(--accent-pink); color: white; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: bold;">LIMITED 8 MARCH</span>
+            <span style="background: #fce4ec; color: #d81b60; padding: 5px 15px; border-radius: 20px; font-size: 0.8rem;">Exclusive Pink</span>
+        </div>
+    </div>
+    <div class="product-info">
+        <div class="tag">Special Holiday Edition • Подарок мечты</div>
+        <h2 style="font-size: 2.5rem; margin: 10px 0; background: linear-gradient(45deg, #ff8fa3, #d63384); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Dyson Airwrap™ Strawberry Bronze</h2>
+        <p style="color: #666; line-height: 1.6;">Самый желанный подарок к 8 Марта. Лимитированная серия в нежном оттенке «Клубничная бронза». Этот мультистайлер не просто делает идеальные локоны, он заботится о здоровье волос, делая их блестящими и послушными без экстремального перегрева.</p>
+        
+        <ul class="specs">
+            <li><strong>Цвет:</strong> Эксклюзивная весенняя палитра</li>
+            <li><strong>Комплектация:</strong> Все насадки для длинных волос</li>
+            <li><strong>Бонус:</strong> Премиальный кейс для хранения</li>
+            <li><strong>Технология:</strong> Эффект Коанда для безупречной гладкости</li>
+        </ul>
+
+        <div class="price" style="color: var(--accent-pink); font-weight: bold;">239.990 тг</div>
+        
+        <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20заказать%20лимитированный%20Dyson%20к%208%20марта%20за%20239.990%20тг" class="btn btn-pink" style="width: 100%; box-sizing: border-box; font-weight: bold; letter-spacing: 1px;">
+            ЗАБРАТЬ ПОДАРОК 🌸
+        </a>
+        <p style="font-size: 0.8rem; color: #999; margin-top: 15px; text-align: center;">*Количество ограничено. Бесплатная доставка.</p>
+    </div>
+</div>
+<div class="product-grid reveal" id="combo-set" style="border: 2px solid var(--dyson-black);">
+    <div class="product-images">
+        <img src="https://www.imgur.la/images/2026/03/05/IMG-20260305-WA0005.jpg" alt="Dyson Combo Set" class="main-img" id="comboMainImage">
+        
+        <div class="thumbs">
+            <img src="https://www.imgur.la/images/2026/03/05/IMG-20260305-WA0005.jpg" onclick="document.getElementById('comboMainImage').src=this.src" alt="View 1">
+            <img src="https://www.imgur.la/images/2026/03/05/IMG-20260305-WA0008.jpg" onclick="document.getElementById('comboMainImage').src=this.src" alt="View 2">
+        </div>
+        <div style="margin-top: 10px;">
+            <span style="background: #000; color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 0.75rem; letter-spacing: 1px;">ВЫГОДНОЕ ПРЕДЛОЖЕНИЕ</span>
+        </div>
+    </div>
+    <div class="product-info">
+        <div class="tag">Dyson Combo • Профессиональный набор</div>
+        <h2 style="font-size: 2.3rem; margin: 10px 0;">Dyson Supersonic™ Deluxe Set</h2>
+        <p style="color: #666; line-height: 1.6;">Идеальное решение для тех, кто ценит время и результат. В этот комбо-набор входит легендарный фен Supersonic и расширенный комплект аксессуаров для профессионального стайлинга у вас дома.</p>
+        
+        <ul class="specs">
+            <li><strong>Мощность:</strong> Двигатель V9 с цифровым управлением</li>
+            <li><strong>Защита:</strong> Автоматический контроль нагрева воздуха</li>
+            <li><strong>Комбо:</strong> Полный набор магнитных насадок</li>
+            <li><strong>Дизайн:</strong> Эргономичный корпус и стильное исполнение</li>
+        </ul>
+
+        <div class="price">116.290 тг</div>
+        
+        <a href="https://wa.me/77051481802?text=Здравствуйте!%20Хочу%20заказать%20Комбо%20набор%20Dyson%20за%20116.290%20тг" class="btn" style="width: 100%; box-sizing: border-box; background: var(--dyson-black);">
+            КУПИТЬ КОМБО
+        </a>
+        <p style="font-size: 0.8rem; color: #999; margin-top: 15px; text-align: center;">Цена актуальна только при покупке набора.</p>
+    </div>
+</div> 
+ 
